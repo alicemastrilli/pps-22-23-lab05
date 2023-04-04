@@ -72,22 +72,22 @@ enum List[A]:
    * list's elements starting from the element in input.
    */
 
-  private def split(list: List[A], elem:A) : (List[A], List[A]) = list match
-    case h :: t if !h.equals(elem) => (h :: split(t,elem )._1, split(t,elem )._2)
-    case _ => (Nil(), list)
+  private def split(elem:A) : (List[A], List[A]) = this match
+    case h :: t if !h.equals(elem) => (h :: t.split(elem)._1, t.split(elem)._2)
+    case _ => (Nil(), this)
 
   def span(pred: A => Boolean): (List[A], List[A]) =
-    split(this, filter(!pred.apply(_)).head.get)
+    split(filter(!pred.apply(_)).head.get)
 
 
   /** @throws UnsupportedOperationException if the list is empty */
   def reduce(op: (A, A) => A): A = this match
     case Nil() => throw new UnsupportedOperationException()
-    case h :: Nil() => h
-    case _ => split(this, get(1).get)._2.foldRight(head.get)(op)
+    case h :: t => t.foldRight(h)(op)
 
-  def takeRight(n: Int): List[A] =
-    split(this, get(length-n).get)._2
+  def takeRight(n: Int): List[A] = n match
+    case n if n >= 0 & n < length => split(get(length-n).get)._2
+    case _ => Nil()
 
 // Factories
 object List:
