@@ -59,16 +59,35 @@ enum List[A]:
   def reverse(): List[A] = foldLeft[List[A]](Nil())((l, e) => e :: l)
 
   /** EXERCISES */
-  def zipRight: List[(A, Int)] = ???
+  def zipRight: List[(A, Int)] =
+    foldRight((List.Nil[(A, Int)](), length-1)) {
+      case (element, (list, counter)) =>  ((element, counter) :: list, counter-1)
+    }._1
 
-  def partition(pred: A => Boolean): (List[A], List[A]) = ???
+  def partition(pred: A => Boolean): (List[A], List[A]) =
+    (filter(pred),  filter(!pred.apply(_)))
 
-  def span(pred: A => Boolean): (List[A], List[A]) = ???
+  /*
+   * split the input list in two sub-lists. The second one contains all the
+   * list's elements starting from the element in input.
+   */
+
+  private def split(list: List[A], elem:A) : (List[A], List[A]) = list match
+    case h :: t if !h.equals(elem) => (h :: split(t,elem )._1, split(t,elem )._2)
+    case _ => (Nil(), list)
+
+  def span(pred: A => Boolean): (List[A], List[A]) =
+    split(this, filter(!pred.apply(_)).head.get)
+
 
   /** @throws UnsupportedOperationException if the list is empty */
-  def reduce(op: (A, A) => A): A = ???
+  def reduce(op: (A, A) => A): A = this match
+    case Nil() => throw new UnsupportedOperationException()
+    case h :: Nil() => h
+    case _ => split(this, get(1).get)._2.foldRight(head.get)(op)
 
-  def takeRight(n: Int): List[A] = ???
+  def takeRight(n: Int): List[A] =
+    split(this, get(length-n).get)._2
 
 // Factories
 object List:
