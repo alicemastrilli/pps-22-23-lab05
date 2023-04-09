@@ -1,7 +1,5 @@
 package u05lab.ex1
 
-import u05lab.ex1.List
-
 // Ex 1. implement the missing methods both with recursion or with using fold, map, flatMap, and filters
 // List as a pure interface
 enum List[A]:
