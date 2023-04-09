@@ -5,7 +5,7 @@ import org.junit.Test
 
 class TestConferenceReviewing:
   var cr = ConferenceReviewing()
-  cr.loadReview(1, 8, 8, 6, 8)
+  cr.loadReview(1, 8, 8, 6, 8) //4.8
   cr.loadReview(1, 9, 9, 6, 9) // 5.4
   cr.loadReview(2, 9, 9, 10, 9) // 9.0
   cr.loadReview(2, 4, 6, 10, 6) // 6.0
@@ -35,7 +35,15 @@ class TestConferenceReviewing:
     assertEquals(cr.averageFinalScore(5), 10.0, 0.01)
 
   @Test def testAcceptedArticles() =
-    assertEquals(cr.acceptedArticles(), Set(1,2,4));
+    assertEquals(cr.acceptedArticles(), Set(1,2,4))
 
   @Test def testSortedAcceptedArticles() =
-    assertEquals(cr.sortedAcceptedArticles(), List((4,7.0),(2,7.5),(1,8.5)));
+    assertEquals(cr.sortedAcceptedArticles(), List((4,7.0),(2,7.5),(1,8.5)))
+
+  @Test def optionalTestAverageWeightedFinalScore() =
+    assertEquals(cr.averageWeightedFinalScoreMap()(1),(4.8+5.4)/2,0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap()(2), (9.0 + 6.0) / 2, 0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap()(3), (0.9 + 1.6) / 2, 0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap()(4), (3.6 + 5.6 + 5.6) / 3, 0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap()(5), (6.0 + 7.0) / 2, 0.01)
+    assertEquals(cr.averageWeightedFinalScoreMap().toList.length, 5)
