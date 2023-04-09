@@ -14,6 +14,7 @@ trait ConferenceReviewing:
   def orderedScores(article: Int, question: Question): List[Int]
   def averageFinalScore(article: Int): Double
   def acceptedArticles(): Set[Int]
+  def sortedAcceptedArticles(): List[(Int, Double)]
   def averageWeightedFinalScoreMap(): Map[Int, Double]
 
 object ConferenceReviewing:
@@ -41,6 +42,11 @@ class ConferenceReviewingImpl extends ConferenceReviewing:
     reviews.filter(p => p._1.equals(article)).map(p => p._2.apply(Question.Final())).sum.toDouble /
       reviews.filter(p => p._1.equals(article)).map(p => p._2.apply(Question.Final())).length
 
-  override def acceptedArticles(): Set[Int] = ???
+  override def acceptedArticles(): Set[Int] =
+    reviews.filter(a => averageFinalScore(a._1) > 5).filter(a => a._2.apply(Question.Relevance()) >= 8).
+      map(a => a._1).toSet
+
+  override def sortedAcceptedArticles(): List[(Int, Double)] =
+    acceptedArticles().map(a => (a, averageFinalScore(a))).toList.sortBy(a => (a._2, a._1))
 
   override def averageWeightedFinalScoreMap(): Map[Int, Double] = ???
