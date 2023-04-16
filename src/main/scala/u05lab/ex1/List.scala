@@ -71,7 +71,7 @@ enum List[A]:
    */
 
   private def split(elem:A) : (List[A], List[A]) = this match
-    case h :: t if !h.equals(elem) => (h :: t.split(elem)._1, t.split(elem)._2)
+    case h :: t if h != elem => (h :: t.split(elem)._1, t.split(elem)._2)
     case _ => (Nil(), this)
 
   def span(pred: A => Boolean): (List[A], List[A]) =
